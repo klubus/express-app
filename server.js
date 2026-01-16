@@ -11,12 +11,26 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(path.join(__dirname, '/public')));
+
+app.use('/user', (req, res, next) => {
+  res.show('/forbidden.html');
+});
+
+app.get('/', (req, res) => {
+  res.show('home.html');
+});
+
 app.get('/home', (req, res) => {
   res.show('home.html');
 });
 
 app.get('/about', (req, res) => {
   res.show('about.html');
+});
+
+app.use((req, res) => {
+  res.show('/404.html');
 });
 
 app.listen(8000, () => {
