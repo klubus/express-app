@@ -1,6 +1,7 @@
 const express = require('express');
 const hbs = require('express-handlebars');
 const path = require('path');
+const formidable = require('formidable');
 
 const app = express();
 
@@ -35,6 +36,27 @@ app.get('/info', (req, res) => {
 
 app.get('/history', (req, res) => {
   res.render('history', { layout: 'dark' });
+});
+
+app.post('/contact/send-message', (req, res) => {
+  const form = new formidable.IncomingForm();
+
+  form.parse(req, (err, fields, files) => {
+    const { author, sender, title, message } = fields;
+    const file = files.file;
+    const fileName = Array.isArray(file)
+      ? file[0].originalFilename
+      : file.originalFilename;
+
+    if (author && sender && title && message && file) {
+      res.render('contact', {
+        isSent: true,
+        fileName,
+      });
+    } else {
+      res.render('contact', { isError: true });
+    }
+  });
 });
 
 app.use((req, res) => {
